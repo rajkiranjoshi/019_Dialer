@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.util.Log;
 
 public class OutgoingCallHandler extends BroadcastReceiver {
-    private static Boolean calledEarlier = false;
+    public static Boolean calledEarlier = false;
     public OutgoingCallHandler() {
     }
 
@@ -15,6 +15,7 @@ public class OutgoingCallHandler extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
+        Log.i("BC_RECEIVER","called Earlier is " + (calledEarlier ? "True":"False"));
         if(!calledEarlier) {
             // Extract phone number reformatted by previous receivers
             String phoneNumber = getResultData();

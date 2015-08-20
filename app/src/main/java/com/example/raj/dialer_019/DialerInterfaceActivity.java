@@ -16,7 +16,7 @@ public class DialerInterfaceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dialer_interface);
+//        setContentView(R.layout.activity_dialer_interface);
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
@@ -27,39 +27,39 @@ public class DialerInterfaceActivity extends AppCompatActivity {
         String data_str = data.toString();
         String num = data_str.substring(data_str.indexOf(':')+1,data_str.length());
         Log.i("DialerInterface","Number: "+num);
-        TextView textV = (TextView) findViewById(R.id.ph_num);
-        textV.setText(num);
-
-        if (!num.equals("")) {
-            Uri number = Uri.parse("tel:" + num);
+//        TextView textV = (TextView) findViewById(R.id.ph_num);
+//        textV.setText(num);
+        String newNum = modifyNum(num);
+        Log.i("DialerInterface","New Number: "+newNum);
+        if (!newNum.equals("")) {
+            Uri number = Uri.parse("tel:" + newNum);
             Intent dial = new Intent(Intent.ACTION_CALL);
             dial.setData(number);
+            OutgoingCallHandler.calledEarlier = true;
             startActivity(dial);
             finish();
         }
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_dialer_interface, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private static String modifyNum(String num){
+        String newNum = "";
+        if(num.length()==13 && num.substring(0,3).equals("+91")){ //India number being called
+            Log.i("DialerInterface","India number");
+            newNum = "019"+num.substring(1,num.length());
         }
-
-        return super.onOptionsItemSelected(item);
+        else if(num.length()==12 && num.substring(0,2).equals("+1")) { //US number being called
+            Log.i("DialerInterface", "US number");
+            newNum = "019"+num.substring(1,num.length());
+        }
+        else{
+            Log.i("DialerInterface", "Error with the number");
+            newNum = "";
+            //TODO show a error pop-up
+        }
+        return newNum;
     }
+
+
 
 }
