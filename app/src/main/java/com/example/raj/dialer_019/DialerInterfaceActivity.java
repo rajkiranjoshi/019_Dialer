@@ -1,9 +1,15 @@
 package com.example.raj.dialer_019;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.util.regex.Pattern;
 
 public class DialerInterfaceActivity extends AppCompatActivity {
 
@@ -11,6 +17,27 @@ public class DialerInterfaceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialer_interface);
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        Log.i("DialerInterFace","Action: "+action);
+        Log.i("DialerInterface","ActionType: "+type);
+
+        Uri data = intent.getData();
+        String data_str = data.toString();
+        String num = data_str.substring(data_str.indexOf(':')+1,data_str.length());
+        Log.i("DialerInterface","Number: "+num);
+        TextView textV = (TextView) findViewById(R.id.ph_num);
+        textV.setText(num);
+
+        if (!num.equals("")) {
+            Uri number = Uri.parse("tel:" + num);
+            Intent dial = new Intent(Intent.ACTION_CALL);
+            dial.setData(number);
+            startActivity(dial);
+            finish();
+        }
+
     }
 
     @Override
@@ -34,27 +61,5 @@ public class DialerInterfaceActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /*
-    private void performDial(String numberString) {
-    if (!numberString.equals("")) {
-       Uri number = Uri.parse("tel:" + numberString);
-       Intent dial = new Intent(Intent.ACTION_CALL, number);
-       startActivity(dial);
-        }
-    }
-    Also directly try registering the intent ACTION_CALL bypassing the broadcaster
-     */
-
-
-
-
-
-
-
-
-
-
-
 
 }
